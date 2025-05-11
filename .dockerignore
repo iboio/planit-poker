@@ -6,8 +6,7 @@
 **/.idea
 
 # Ignore all .env files, except for frontend/.env.prod
-.env*
-!/frontend/.env.prod
+.env
 
 /frontend/public/assets
 /frontend/public/index.html
