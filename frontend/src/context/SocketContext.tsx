@@ -13,14 +13,7 @@ interface SocketContextType {
   off: (event: string) => void;
   connectionState: number;
 }
-let SOCKET_URL = "192.168.1.11:3000";
-fetch('/config.json')
-    .then(res => res.json())
-    .then(cfg => {
-      if (cfg.SOCKET_URL) {
-        SOCKET_URL = cfg.SOCKET_URL;
-      }
-    });
+const SOCKET_URL = import.meta.env.VITE_SOCKET_URL;
 const SocketContext = createContext<SocketContextType | undefined>(undefined);
 
 export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {

@@ -3,8 +3,6 @@ node_modules/
 dist/
 *.log
 .env
-.env.local
-.env.*
 
 # --- Vite Frontend ---
 /frontend/node_modules/

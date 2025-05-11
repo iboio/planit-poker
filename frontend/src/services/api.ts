@@ -1,14 +1,7 @@
 import axios from 'axios';
 import {CreateRoomRequest, RoomData, Task} from "@/interfaces/room.ts";
 
-let API_URL = 'http://192.168.1.11:3000/api';
-fetch('/config.json')
-    .then(res => res.json())
-    .then(cfg => {
-        if (cfg.API_URL) {
-            API_URL = cfg.API_URL;
-        }
-    });
+const API_URL = import.meta.env.VITE_URL;
 
 interface CreateRoomResponse {
     sessionId: string;
@@ -25,7 +18,7 @@ interface StatusResponse {
     status: 'ROOM_NOT_FOUND' | 'NEW_USER' | 'RECONNECTED' | 'USERNAME_EXIST' | 'USERNAME_OK';
 }
 
-interface Register extends User{
+interface Register extends User {
     role: string;
 }
 
