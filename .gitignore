@@ -1,0 +1,27 @@
+# --- Ortak ---
+node_modules/
+dist/
+*.log
+.env
+.env.local
+.env.*
+
+# --- Vite Frontend ---
+/frontend/node_modules/
+/frontend/dist/
+/frontend/.vite/
+
+# --- NestJS Backend ---
+/backend/node_modules/
+/backend/dist/
+/backend/.env
+/backend/.env.*
+/backend/public/assets/
+/backend/public/index.html
+
+# --- OS/IDE ---
+.DS_Store
+Thumbs.db
+*.swp
+.vscode/
+.idea/

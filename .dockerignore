@@ -1,0 +1,19 @@
+# --- Ortak ---
+.git
+.gitignore
+Dockerfile
+docker-compose.yml
+README.md
+
+# --- Gereksiz dizinler ---
+**/node_modules
+**/dist
+**/.vite
+**/.DS_Store
+**/.env*
+**/.vscode
+**/.idea
+
+# --- Ignore frontend build output (çünkü yeniden build ediliyor) ---
+/backend/public/assets
+/backend/public/index.html
