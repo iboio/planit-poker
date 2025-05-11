@@ -1,0 +1,15 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@store/*": ["src/store/*"],
+      "@dto/*": ["src/dto/*"],
+      "@roomService/*": ["src/scrum-poker/services/*"],
+      "@entities/*": ["src/database/entities/*"],
+      "@repositories/*": ["src/database/repositories/*"],
+      "@database": ["src/database/database.module.ts"]
+    }
+  },
+  "exclude": ["node_modules", "test", "dist", "**/*spec.ts"]
+}
