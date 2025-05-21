@@ -15,7 +15,7 @@ Planit Poker is an online scrum poker tool designed to facilitate agile team pla
 
 - **Frontend:** React, Vite, CSS
 - **Backend:** Node.js, NestJS, WebSockets (Socket.IO)
-- **Database:** Redis (for session and room management)
+- **Database:** Memory (for session and room management)
 - **Real-time Communication:** WebSocket for live voting and updates
 - **Docker:** For containerizing both frontend and backend services
 

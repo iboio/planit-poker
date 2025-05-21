@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { SocketProvider } from './context/SocketContext';
-import Home from './pages/Home';
-import PokerRoom from './pages/PokerRoom';
+import Home from './pages/home.tsx';
+import PokerRoom from './pages/pokerRoom.tsx';
 import './App.css';
 import { v4 as uuidv4 } from 'uuid';
 import {feedBack} from "@/services/api.ts";
@@ -47,7 +47,7 @@ function App() {
                 </Routes>
 
                 {/* Sağ altta Feedback butonu */}
-                <div className="fixed bottom-6 left-6 z-50">
+                <div className="fixed bottom-6 right-6 z-50">
                     <Dialog open={open} onOpenChange={setOpen}>
                         <DialogTrigger asChild>
                             <Button variant="default">Feedback</Button>
