@@ -12,6 +12,8 @@ interface SetUsernameProps {
 }
 
 export default function SetUsername({showRoom}: SetUsernameProps) {
+    localStorage.removeItem('username');
+    localStorage.removeItem('role');
     const [username, setUsername] = React.useState("");
     const [isUsernameLoading, setIsUsernameLoading] = React.useState(false);
     const [error, setError] = React.useState("");

@@ -15,12 +15,23 @@ export class ScrumPokerService {
     return this.storeService.getRoomStorage();
   }
 
-  @Cron('0 0 * * *')
-  handleMidnightJob() {
+  @Cron('0 * * * *')
+  handleHourlyCleanup() {
     const rooms = this.room;
+    const now = new Date().getTime();
+
     for (const sessionId in rooms) {
-      const roomData = rooms[sessionId];
-      if (roomData && roomData.length > 0) {
+      const roomData = rooms[sessionId][0];
+      if (!roomData) continue;
+
+      const createdAtTime = roomData.createdAt?.getTime?.() ?? 0;
+      const lastActivityTime = roomData.updatedAt?.getTime?.() ?? 0;
+
+      const hoursSinceCreation = (now - createdAtTime) / (1000 * 60 * 60);
+      const hoursSinceLastActivity =
+        (now - lastActivityTime) / (1000 * 60 * 60);
+
+      if (hoursSinceCreation >= 24 || hoursSinceLastActivity >= 12) {
         this.roomService.deleteSession(sessionId);
       }
     }

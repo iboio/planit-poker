@@ -8,6 +8,7 @@ import { ScrumPokerSocket } from './scrum.poker.socket';
 import { VoteService } from './services/vote.service';
 import { TaskService } from './services/task.service';
 import { ScrumPokerService } from './scrum.poker.service';
+import { MessageService } from '@roomService/message.service';
 
 @Module({
   imports: [StoreModule],
@@ -18,6 +19,7 @@ import { ScrumPokerService } from './scrum.poker.service';
     ScrumPokerSocket,
     VoteService,
     TaskService,
+    MessageService,
     ScrumPokerService,
   ],
   controllers: [ScrumPokerController],

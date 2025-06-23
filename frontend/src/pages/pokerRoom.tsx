@@ -5,7 +5,7 @@ import {
     getRoomData,
     sendVote,
     showVotes,
-    nextTask,
+    nextTask, sendMessage,
 } from "../services/api.ts";
 import {Button} from "@/components/ui/button";
 import {useSocket} from "@/context/SocketContext";
@@ -13,11 +13,12 @@ import CardList from "@/components/cards/card-list";
 import TaskTable from "@/components/tables/task-table";
 import UserTable from "@/components/tables/user-table.tsx";
 import VoteTable from "@/components/tables/vote-table";
-import {RoomData, RoomUser, Task, Vote} from "@/interfaces/room.ts";
+import {Message, RoomData, RoomUser, Task, Vote} from "@/interfaces/room.ts";
 import NewUsername from "@/components/room/set-new-username.tsx";
 import SetUsername from "@/components/room/set-username.tsx";
 import {getUserField} from "@/services/helper.ts";
 import Header from "@/components/room/header.tsx";
+import ChatComponent from "@/components/room/chat.tsx";
 
 export default function PokerRoom() {
 
@@ -33,6 +34,7 @@ export default function PokerRoom() {
     const [resetKeySignal, setResetKeySignal] = React.useState(0);
     const [showNewUsername, setShowNewUsername] = React.useState(false);
 
+
     const [roomState, setRoomState] = React.useState<RoomData>({
         room: {
             roomRule: "",
@@ -41,6 +43,7 @@ export default function PokerRoom() {
             showTask: false,
             cards: [],
             show: false,
+            messages: [],
             activeUsers: [],
             allUsers: [],
             createdAt: new Date(),
@@ -137,11 +140,22 @@ export default function PokerRoom() {
             deleteClickedCard();
         });
 
+        socket.on('newMessage', (message: {message: Message}) => {
+            setRoomState(prev => ({
+                ...prev,
+                room: {
+                    ...prev.room,
+                    messages: [...prev.room.messages, message.message]
+                }
+            }));
+        })
+
         return () => {
             socket.off('newVote');
             socket.off('newUser');
             socket.off('showVotes');
             socket.off('nextTask');
+            socket.off('newMessage');
         };
     }, [socket, roomState.userType]);
 
@@ -174,6 +188,20 @@ export default function PokerRoom() {
     const deleteClickedCard = () => {
         localStorage.removeItem('cardKey');
         setResetKeySignal(prev => prev + 1);
+    };
+
+    const handleSendMessage = (message: string) => {
+        if (!message.trim()) {
+            return; // Do not send empty messages
+        }
+        const userField = getUserField();
+        const newMsg = {
+            ...userField,
+            message: message,
+            timestamp: new Date(),
+            type: "message"
+        } as Message;
+        sendMessage(newMsg)
     };
 
     const handleCardClick = async (key: string, value: string) => {
@@ -298,6 +326,8 @@ export default function PokerRoom() {
                                     )}
                                 </div>
                             </div>
+
+                            <ChatComponent users={roomState.room.activeUsers} messages={roomState.room.messages} onSendMessage={handleSendMessage} />
 
                             {roomState.room.showTask && (
                                 <div className="bg-white rounded-lg shadow-md p-4 flex flex-col basis-[25%]"> {/* 3/12 = 25% */}

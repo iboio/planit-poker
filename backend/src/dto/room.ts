@@ -27,10 +27,13 @@ export class Room {
   showTask: boolean;
   tasks: Task[];
   show: boolean;
+  createdAt: Date;
+  updatedAt: Date;
   cards: Card[];
   activeUsers: RoomUser[];
   allUsers: RoomUser[];
   voteStatus: string;
+  messages: Message[];
 }
 
 class RoomUser {
@@ -46,4 +49,10 @@ export class Task {
 export class nextTask extends User {
   type: string;
   votingTask: Task;
+}
+
+export class Message extends User {
+  message: string;
+  timestamp: Date;
+  type: string;
 }
