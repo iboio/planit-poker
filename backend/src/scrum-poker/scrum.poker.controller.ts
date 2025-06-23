@@ -78,6 +78,7 @@ export class ScrumPokerController {
     this.scrumPokerGateway.eventHandler(sessionId, 'newVote', {
       votedUsers: this.voteService.getVotedUsers(sessionId),
     });
+    this.roomService.updateRoom(sessionId);
 
     return { message: 'Vote recorded' };
   }
@@ -92,7 +93,7 @@ export class ScrumPokerController {
     this.scrumPokerGateway.eventHandler(sessionId, 'showVotes', {
       votes: this.voteService.getVotes(sessionId),
     });
-
+    this.roomService.updateRoom(sessionId);
     return { message: 'Votes shown' };
   }
 
@@ -109,6 +110,7 @@ export class ScrumPokerController {
     this.scrumPokerGateway.eventHandler(sessionId, 'nextTask', {
       tasks: this.taskService.getTaskList(sessionId),
     });
+    this.roomService.updateRoom(sessionId);
     return { message: 'next task' };
   }
 

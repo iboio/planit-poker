@@ -27,6 +27,8 @@ export class Room {
   showTask: boolean;
   tasks: Task[];
   show: boolean;
+  createdAt: Date;
+  updatedAt: Date;
   cards: Card[];
   activeUsers: RoomUser[];
   allUsers: RoomUser[];

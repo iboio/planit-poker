@@ -11,6 +11,7 @@ import { VoteService } from './vote.service';
 import * as crypto from 'crypto';
 import { TaskService } from './task.service';
 import { UserService } from './user.service';
+
 @Injectable()
 export class RoomService {
   constructor(
@@ -55,6 +56,8 @@ export class RoomService {
         cards: this.cardService.cardGenerate(roomRule, incAmount),
         roomName: roomName,
         roomRule: roomRule,
+        createdAt: new Date(),
+        updatedAt: new Date(),
         showTask: showTask,
         show: false,
         tasks: this.taskService.createTasks(tasks),
@@ -74,12 +77,22 @@ export class RoomService {
       );
     }
   }
+
   getRoom(sessionId: string) {
     return this.rooms[sessionId]?.[0];
   }
 
   roomExist(sessionId: string) {
     return !!this.rooms[sessionId];
+  }
+
+  updateRoom(sessionId: string) {
+    if (!this.rooms[sessionId]) {
+      throw new BadRequestException('Room does not exist');
+    }
+
+    this.rooms[sessionId][0].updatedAt = new Date();
+    return;
   }
 
   deleteSession(sessionId: string) {
