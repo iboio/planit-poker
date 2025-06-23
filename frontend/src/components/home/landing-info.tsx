@@ -24,7 +24,7 @@ const LandingInfo = () => (
         <Section icon={Lightbulb} title="What does Hayrat Planit offer?">
             Unlike other Scrum Poker tools, Planit avoids distracting elements and advertisements. Votes are calculated based on selected roles, allowing you to assess the complexity of a task per role. It’s open source and includes a Dockerfile, so you can host and customize it yourself.
             <br />
-            GitHub Repository: <a href="https://github.com/iboio/planit-poker" className="text-blue-600 underline">github.com/iboio/scrum-poker</a>
+            GitHub Repository: <a href="https://github.com/iboio/planit-poker" className="text-blue-600 underline">https://github.com/iboio/planit-poker</a>
         </Section>
 
         <Section icon={Settings} title="How to create a room?">

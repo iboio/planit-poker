@@ -47,7 +47,7 @@ function App() {
                 </Routes>
 
                 {/* Sağ altta Feedback butonu */}
-                <div className="fixed bottom-6 right-6 z-50">
+                <div className="fixed bottom-8 right-25 z-50">
                     <Dialog open={open} onOpenChange={setOpen}>
                         <DialogTrigger asChild>
                             <Button variant="default">Feedback</Button>

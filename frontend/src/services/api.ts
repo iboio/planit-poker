@@ -1,5 +1,5 @@
 import axios from 'axios';
-import {CreateRoomRequest, RoomData, Task} from "@/interfaces/room.ts";
+import {CreateRoomRequest, Message, RoomData, Task} from "@/interfaces/room.ts";
 
 const API_URL = import.meta.env.VITE_URL;
 
@@ -93,4 +93,9 @@ export const feedBack = async (data: { email: string; message: string }): Promis
 export const getGaID = async (): Promise<{ GA_ID: string }> => {
     const response = await api.get(`/ga`);
     return response.data.GA_ID;
+}
+
+export const sendMessage = async (data: Message) : Promise<StatusResponse> => {
+    const response = await api.post('/room/message', data);
+    return response.data as StatusResponse;
 }

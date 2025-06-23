@@ -31,11 +31,14 @@ export default function ChatComponent({ messages, onSendMessage, users }: ChatCo
     React.useEffect(() => {
         if (isOpen) {
             setUnreadCount(0);
+            // Chat açıldığında en son mesaja scroll et
+            setTimeout(() => {
+                scrollToBottom();
+            }, 100);
         }
     }, [isOpen]);
 
     const handleSendMessage = () => {
-        console.log(newMessage)
         if (newMessage.trim()) {
             onSendMessage?.(newMessage);
             setNewMessage("");
@@ -52,12 +55,22 @@ export default function ChatComponent({ messages, onSendMessage, users }: ChatCo
         setIsOpen(!isOpen);
     };
 
+    const timeFormater = (rawDate: Date) => {
+        const date = new Date(rawDate);
+        return new Intl.DateTimeFormat('tr-TR', {
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: false,
+            timeZone: 'Europe/Istanbul', // Local timezone
+        }).format(date);
+    }
+
     return (
         <div className="fixed bottom-6 right-6 z-50">
             {/* Chat Window */}
             {isOpen && (
-                <Card className="w-96 h-[500px] mb-4 shadow-2xl border-0 bg-white/95 backdrop-blur-sm">
-                    <CardHeader className="pb-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-t-lg">
+                <Card className="absolute bottom-16 right-0 w-96 h-[500px] shadow-2xl border bg-white">
+                    <CardHeader className="pb-3 bg-gray-900 text-white rounded-t-lg">
                         <div className="flex items-center justify-between">
                             <CardTitle className="text-lg font-semibold flex items-center gap-2">
                                 <MessageCircle className="w-5 h-5" />
@@ -72,13 +85,13 @@ export default function ChatComponent({ messages, onSendMessage, users }: ChatCo
                                 <X className="w-4 h-4" />
                             </Button>
                         </div>
-                        <div className="flex items-center gap-4 text-sm text-blue-100">
+                        <div className="flex items-center gap-4 text-sm text-gray-300">
                             <div className="flex items-center gap-1">
                                 <Users className="w-4 h-4" />
                                 {users.length} User
                             </div>
                             <div className="flex items-center gap-1">
-                                <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
                                 Online
                             </div>
                         </div>
@@ -86,50 +99,58 @@ export default function ChatComponent({ messages, onSendMessage, users }: ChatCo
 
                     <CardContent className="p-0 flex flex-col h-[400px]">
                         {/* Messages Area */}
-                        <ScrollArea className="flex-1 p-4">
+                        <ScrollArea className="flex-1 p-4 min-h-0">
                             <div className="space-y-3">
-                                {messages.map((msg) => (
-                                    <div className={`flex gap-3 ${msg.type === 'system' ? 'justify-center' : ''}`}>
-                                        {msg.type === 'system' ? (
-                                            <div className="bg-gray-100 text-gray-600 text-xs px-3 py-2 rounded-full">
-                                                {msg.message}
-                                            </div>
-                                        ) : (
-                                            <>
-                                                <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white text-xs font-semibold flex-shrink-0">
-                                                    {msg.username[0].toUpperCase()}
-                                                </div>
-                                                <div className="flex-1 min-w-0">
-                                                    <div className="flex items-center gap-2 mb-1">
-                                                        <span className="font-medium text-sm text-gray-900">{msg.username}</span>
-                                                        <span className="text-xs text-gray-500">{"test"}</span>
-                                                    </div>
-                                                    <div className="bg-gray-50 rounded-lg p-3 text-sm text-gray-800">
-                                                        {msg.message}
-                                                    </div>
-                                                </div>
-                                            </>
-                                        )}
+                                {messages.length === 0 ? (
+                                    <div className="flex flex-col items-center justify-center text-center py-12">
+                                        <MessageCircle className="w-12 h-12 text-gray-300 mb-4" />
+                                        <h3 className="text-lg font-medium text-gray-500 mb-2">No message yet</h3>
+                                        <p className="text-sm text-gray-400">Start the conversation by sending the first message!</p>
                                     </div>
-                                ))}
+                                ) : (
+                                    messages.map((msg, index) => (
+                                        <div key={index} className={`flex gap-3 ${msg.type === 'system' ? 'justify-center' : ''}`}>
+                                            {msg.type === 'system' ? (
+                                                <div className="bg-gray-100 text-gray-600 text-xs px-3 py-2 rounded-full">
+                                                    {msg.message}
+                                                </div>
+                                            ) : (
+                                                <>
+                                                    <div className="w-8 h-8 bg-gray-800 rounded-full flex items-center justify-center text-white text-xs font-semibold flex-shrink-0">
+                                                        {msg.username.charAt(0).toUpperCase()}
+                                                    </div>
+                                                    <div className="flex-1 min-w-0">
+                                                        <div className="flex items-center gap-2 mb-1">
+                                                            <span className="font-medium text-sm text-gray-900">{msg.username + " / " + msg.role}</span>
+                                                            <span className="text-xs text-gray-500">{timeFormater(msg.timestamp)}</span>
+                                                        </div>
+                                                        <div className="bg-gray-50 rounded-lg p-3 text-sm text-gray-800 break-words">
+                                                            {msg.message}
+                                                        </div>
+                                                    </div>
+                                                </>
+                                            )}
+                                        </div>
+                                    ))
+                                )}
                                 <div ref={messagesEndRef} />
                             </div>
                         </ScrollArea>
 
                         {/* Message Input */}
-                        <div className="border-t p-4 bg-gray-50">
+                        <div className="border-t p-4 bg-gray-50 flex-shrink-0">
                             <div className="flex gap-2">
                                 <Input
                                     value={newMessage}
                                     onChange={(e) => setNewMessage(e.target.value)}
-                                    onKeyPress={handleKeyPress}
+                                    onKeyDown={handleKeyPress}
                                     placeholder="Mesajınızı yazın..."
-                                    className="flex-1 border-gray-200 focus:border-blue-500"
+                                    className="flex-1 border-gray-300 focus:border-gray-500"
                                 />
                                 <Button
                                     onClick={handleSendMessage}
                                     size="sm"
-                                    className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700"
+                                    className="bg-gray-800 hover:bg-gray-700 text-white flex-shrink-0"
                                 >
                                     <Send className="w-4 h-4" />
                                 </Button>
@@ -142,7 +163,7 @@ export default function ChatComponent({ messages, onSendMessage, users }: ChatCo
             {/* Chat Toggle Button */}
             <Button
                 onClick={handleToggle}
-                className="w-14 h-14 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 shadow-lg hover:shadow-xl transition-all duration-200 relative"
+                className="w-14 h-14 rounded-full bg-gray-800 hover:bg-gray-700 text-white shadow-lg hover:shadow-xl transition-all duration-200 relative"
             >
                 <MessageCircle className="w-6 h-6 text-white" />
                 {unreadCount > 0 && !isOpen && (

@@ -15,7 +15,7 @@ export interface User {
   username: string;
   sessionId: string;
   userId: string;
-  key: string;
+  role: string;
 }
 
 export interface SecurityCheckResponse {
@@ -28,6 +28,7 @@ export interface Room {
   showTask: boolean;
   cards: Card[];
   show: boolean;
+  messages: Message[];
   activeUsers: RoomUser[];
   allUsers: RoomUser[];
   createdAt: Date;
@@ -68,4 +69,9 @@ export interface Vote {
 export interface Task{
   task: string;
   taskStatus: string;
+}
+export interface Message extends User {
+  message: string;
+  timestamp: Date;
+  type: string;
 }
