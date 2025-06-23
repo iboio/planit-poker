@@ -60,6 +60,7 @@ export class RoomService {
         updatedAt: new Date(),
         showTask: showTask,
         show: false,
+        messages: [],
         tasks: this.taskService.createTasks(tasks),
         activeUsers: [],
         allUsers: [],

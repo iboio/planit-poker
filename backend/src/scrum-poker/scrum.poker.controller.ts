@@ -4,8 +4,9 @@ import { UserService } from './services/user.service';
 import { CreateRoomRequest, EditUser } from '@dto/request';
 import { ScrumPokerSocket } from './scrum.poker.socket';
 import { VoteService } from './services/vote.service';
-import { nextTask, Register, User, Vote } from '@dto/room';
+import { Message, nextTask, Register, User, Vote } from '@dto/room';
 import { TaskService } from './services/task.service';
+import { MessageService } from '@roomService/message.service';
 
 @Controller()
 export class ScrumPokerController {
@@ -15,6 +16,7 @@ export class ScrumPokerController {
     private readonly voteService: VoteService,
     private readonly scrumPokerGateway: ScrumPokerSocket,
     private readonly taskService: TaskService,
+    private readonly messageService: MessageService,
   ) {}
 
   @Post('createRoom')
@@ -30,7 +32,6 @@ export class ScrumPokerController {
     if (!this.roomService.roomExist(sessionId)) {
       return { status: 'ROOM_NOT_FOUND' };
     }
-
     if (this.userService.userExist(user)) {
       this.userService.addUserToRoom(user);
       this.scrumPokerGateway.eventHandler(sessionId, 'newUser', {
@@ -39,7 +40,6 @@ export class ScrumPokerController {
       });
       return { status: 'RECONNECTED' };
     }
-
     return { status: 'NEW_USER' };
   }
 
@@ -50,6 +50,21 @@ export class ScrumPokerController {
     }
     const { sessionId } = user;
     this.userService.addUser(user);
+    const systemMsg = {
+      sessionId: sessionId,
+      userId: 'system',
+      username: 'System',
+      role: 'system',
+      type: 'system',
+      message: `${user.username} joined the room with ${user.role} role`,
+      timestamp: new Date(),
+    } as Message;
+    this.messageService.setMessageInStore(systemMsg);
+    this.scrumPokerGateway.eventHandler(sessionId, 'newMessage', {
+      message: {
+        ...systemMsg,
+      },
+    });
     this.scrumPokerGateway.eventHandler(sessionId, 'newUser', {
       allUsers: this.userService.allUserList(sessionId),
       activeUsers: this.userService.userActiveList(sessionId),
@@ -58,9 +73,7 @@ export class ScrumPokerController {
   }
 
   @Get('room/:sessionId')
-  getRoomData(
-    @Param('sessionId') sessionId: string,
-  ) {
+  getRoomData(@Param('sessionId') sessionId: string) {
     const roomData = this.roomService.getRoom(sessionId);
     return {
       room: roomData,
@@ -79,7 +92,6 @@ export class ScrumPokerController {
       votedUsers: this.voteService.getVotedUsers(sessionId),
     });
     this.roomService.updateRoom(sessionId);
-
     return { message: 'Vote recorded' };
   }
 
@@ -138,5 +150,20 @@ export class ScrumPokerController {
   @Get('/ga')
   getGA() {
     return { GA_ID: process.env.GA_ID };
+  }
+
+  @Post('room/message')
+  handleMessage(@Body() message: Message) {
+    const { sessionId } = message;
+    if (!this.roomService.roomExist(sessionId)) {
+      return { status: 'ROOM_NOT_FOUND' };
+    }
+    this.messageService.setMessageInStore(message);
+    this.scrumPokerGateway.eventHandler(sessionId, 'newMessage', {
+      message: {
+        ...message,
+      },
+    });
+    return { status: 'MESSAGE_SENT' };
   }
 }
